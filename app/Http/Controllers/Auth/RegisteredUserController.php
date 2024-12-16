@@ -31,11 +31,23 @@ class RegisteredUserController extends Controller
     {
         // Validasi input
         $request->validate([
-            'nama' => 'required| string| max:255',
-            'email' => 'required| string| email| max:255| unique:users,email',
-            'password' => 'required| string|min-:8 |confirmed',
-            'nomor_telepon' => 'required| string| max:13',
-            'alamat' => 'required| string| max:255',
+            'nama' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('user_type') === 'internal' && !str_ends_with($value, '@mail.unej.ac.id')) {
+                        $fail('Jika anda adalah civitas akademik UNEJ, mohon register memakai email unej');
+                    }
+                },
+            ],
+            'password' => 'required|string|min:8|confirmed',
+            'nomor_telepon' => 'required|string|max:13',
+            'alamat' => 'required|string|max:255',
+            'user_type' => 'required|in:internal,external',
         ]);
 
         // Menyimpan user ke database
@@ -45,6 +57,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->input('password')),
             'nomor_telepon' => $request->input('nomor_telepon'),
             'alamat' => $request->input('alamat'),
+            'user_type' => $request->input('user_type'),
         ]);
 
         // Event Registered (untuk email verifikasi, dll.)

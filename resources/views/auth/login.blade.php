@@ -14,6 +14,17 @@
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl text-center">
                     Login
                 </h1>
+
+                @if ($errors->any())
+                <div class="bg-red-100 text-red-700 p-4 mb-4">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
                 <form class="space-y-4 md:space-y-6" action="{{ route('login') }}" method="POST">
                     @csrf
                     <div>

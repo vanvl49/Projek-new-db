@@ -15,6 +15,7 @@ class UsersSeeder extends Seeder
             'password' => bcrypt('password123'),
             'nomor_telepon' => '08123456789',
             'alamat' => 'Jl. Jawa Jember',
+            'user_type' => 'internal',
         ]);
 
         User::create([

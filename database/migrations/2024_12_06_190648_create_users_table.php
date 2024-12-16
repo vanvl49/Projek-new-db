@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('nomor_telepon');
             $table->string('alamat');
-            $table->string('role')->default('customer');
+            $table->enum('user_type', ['internal', 'external'])->default('external');
             $table->timestamps();
         });
     }

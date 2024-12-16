@@ -1,36 +1,44 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Login')
+@section('title', 'Login')
+
+@section('bg-image-class', 'bg-[url("https://unej.ac.id/wp-content/uploads/2023/07/bgheaderunej.webp")] bg-cover bg-center backdrop-blur-lg')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold text-center mb-4">Admin Login</h2>
-        @if ($errors->any())
-            <div class="text-red-600 mb-4">
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+<section class="">
+    <x-auth-session-status class="" :status="session('status')" />
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <a href="{{ route('home') }}" class="text-4xl font-poppins  font-extrabold text-black mb-2"> SEWA GEDUNG UNEJ </a>
+        <div class="w-full bg-white rounded-lg shadow bg-opacity-50 shadow-lg backdrop-blur-md  md:mt-0 sm:max-w-md xl:p-0">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <h1 class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl text-center">
+                    Admin Login
+                </h1>
+
+                @if ($errors->any())
+                <div class="bg-red-100 text-red-700 p-4 mb-4">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                <form class="space-y-4 md:space-y-6" action="{{ route('admin.login') }}" method="POST">
+                    @csrf
+                    <div>
+                        <label for="username" class="block mb-2 text-sm font-medium text-black">Username</label>
+                        <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-black rounded-lg focus:ring-[#c01315] focus:border-[#c01315] block w-full p-2.5" placeholder="username" required="" />
+                    </div>
+                    <div>
+                        <label for="password" class="block mb-2 text-sm font-medium text-black">Password</label>
+                        <input type="password" name="password" id="password" placeholder="********" class="bg-gray-50 border border-gray-300 text-black rounded-lg focus:ring-[#c01315] focus:border-[#c01315] block w-full p-2.5" required="" />
+                    </div>
+                    <button type="submit" class="w-full text-white bg-[#c01315] hover:bg-red-400 focus:ring-4 focus:outline-none focus:ring-red-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Login</button>
+                </form>
             </div>
-        @endif
-        <form action="{{ route('admin.login.submit') }}" method="POST">
-            @csrf
-            <div class="mb-4">
-                <label for="username" class="block text-gray-700">Username</label>
-                <input type="text" name="username" id="username" 
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your username" required>
-            </div>
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700">Password</label>
-                <input type="password" name="password" id="password" 
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your password" required>
-            </div>
-            <div class="flex justify-end">
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>
 @endsection

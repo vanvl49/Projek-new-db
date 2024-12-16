@@ -15,11 +15,11 @@ class CreatePenyewaanTable extends Migration
             $table->text('detail_acara');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->boolean('confirmed_status')->default(false);
+            $table->enum('confirmed_status', ['pending', 'confirmed', 'rejected'])->default('pending');
             $table->timestamps();
 
-            $table->foreign('id_user')->references('id_user')->on('users');
-            $table->foreign('gedung_id')->references('id')->on('gedung');
+            $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
+            $table->foreign('gedung_id')->references('id')->on('gedung')->onDelete('cascade');
         });
     }
 

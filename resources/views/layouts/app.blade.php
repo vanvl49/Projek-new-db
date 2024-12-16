@@ -22,7 +22,7 @@
                     <img class="h-10 w-10 self-center" src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Logo_unej.png" />
                 </div>
                 <div>
-                    <a href="/home" class="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-sans font-bold ">GedungIn UNEJ</a><br>
+                    <a href="{{ route('home') }}" class="text-2xl no-underline text-grey-darkest hover:[#c01315] font-sans font-bold ">GedungIn UNEJ</a><br>
                     <span class="text-xs text-grey-dark invisible md:visible">Website Penyewaan Gedung UNEJ</span>
                 </div>
             </div>
@@ -30,8 +30,8 @@
 
         <div class="sm:mb-0 self-center">
             <!-- <div class="h-10" style="display: table-cell, vertical-align: middle;"> -->
-            <a href="" class="text-md no-underline hover:underline text-black hover:text-[#c01315] ml-2 px-1 font-poppins transition-colors invisible md:visible">Home</a>
-            <a href="{{ route('home') }}" class="text-md no-underline hover:underline text-black hover:text-[#c01315] ml-2 px-1 font-poppins transition-colors invisible md:visible">Gedung</a>
+            <a href="{{ route('home') }}" class="text-md no-underline hover:underline text-black hover:text-[#c01315] ml-2 px-1 font-poppins transition-colors invisible md:visible">Home</a>
+            <a href="{{ route('customer.gedung') }}" class="text-md no-underline hover:underline text-black hover:text-[#c01315] ml-2 px-1 font-poppins transition-colors invisible md:visible">Gedung</a>
             <!-- <a href="/two" class="text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2">About Us</a> -->
             @if (Route::currentRouteName() === 'home')
             <!-- Tampilkan tombol Sign In jika di halaman landing page -->
@@ -56,17 +56,17 @@
         <!-- aside -->
         <aside class="flex w-72 flex-col space-y-2 border-r-2 border-gray-200 bg-white p-2" style="height: 90.5vh"
             x-show="asideOpen">
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">
+            <a href="{{ route('dashboard') }}" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-[#c01315]">
                 <span class="text-2xl"><i class="bx bx-home"></i></span>
                 <span>Beranda</span>
             </a>
 
-            <a href="#" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">
+            <a href="{{ route('penyewaan.customer') }}" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-[#c01315]">
                 <span class="text-2xl"><i class="bx bx-cart"></i></span>
                 <span>Penyewaan</span>
             </a>
 
-            <a href="#" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-blue-600">
+            <a href="#" class="flex items-center space-x-1 rounded-md px-2 py-3 hover:bg-gray-100 hover:text-[#c01315]">
                 <span class="text-2xl"><i class="bx bx-shopping-bag"></i></span>
                 <span>Riwayat Penyewaan</span>
             </a>
@@ -89,3 +89,4 @@
         }));
     });
 </script>
+@stack('scripts')

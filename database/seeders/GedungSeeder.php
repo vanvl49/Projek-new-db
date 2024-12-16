@@ -20,5 +20,17 @@ class GedungSeeder extends Seeder
             'is_available' => true,
             'gambar_gedung' => 'aula_utama.jpg',
         ]);
+
+        Gedung::create([
+            'nama_gedung' => 'Gedung Soerahman',
+            'deskripsi' => 'Gedung lantai 3 yang dipakai',
+            'kapasitas' => 500,
+            'fasilitas' => 'AC, Proyektor, WiFi, Videotron',
+            'alamat' => 'Jl. Tegal Boto No 49 Jember',
+            'harga_internal' => 1500000.00,
+            'harga_eksternal' => 3000000.00,
+            'is_available' => true,
+            'gambar_gedung' => 'aula_utama.jpg',
+        ]);
     }
 }
