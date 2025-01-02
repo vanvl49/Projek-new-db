@@ -31,23 +31,21 @@ class PenyewaanController extends Controller
     {
         $gedungId = $request->gedung_id;
 
-        $unavailableDates = Penyewaan::where('gedung_id', $gedungId)
-            ->where(function ($query) {
-                $query->where('confirmed_status', 'confirmed')
-                    ->orWhere('confirmed_status', 'pending');
-            })
-            ->get(['tanggal_mulai', 'tanggal_selesai'])
-            ->flatMap(function ($booking) {
-                return CarbonPeriod::create($booking->tanggal_mulai, $booking->tanggal_selesai)->toArray();
-            })
-            ->map(function ($date) {
-                return $date->format('Y-m-d');
-            });
+        $penyewaan = Penyewaan::where('gedung_id', $gedungId)
+            ->where('confirmed_status', 'confirmed')
+            ->get();
 
-        $today = Carbon::now()->toDateString();
-        $unavailableDates->push($today);
+        $booking = $penyewaan->map(function ($sewa) {
+            return [
+                'title' => $sewa->detail_acara,
+                'start' => Carbon::parse($sewa->tanggal_mulai)->toDateString(),
+                'end' => Carbon::parse($sewa->tanggal_selesai)->addDay()->toDateString(),
+                'id' => $sewa->id,
+            ];
+        });
 
-        return response()->json($unavailableDates->unique()->values());
+        // dd($booking);
+        return response()->json($booking);
     }
 
 
@@ -119,9 +117,8 @@ class PenyewaanController extends Controller
         $penyewaan = Penyewaan::find($request->id);
 
         $tanggalMulai = Carbon::parse($penyewaan->tanggal_mulai); // Mengonversi tanggal_mulai ke objek Carbon
-        $tanggalSekarang = Carbon::now();
 
-        if ($tanggalMulai->diffInDays($tanggalSekarang) < 3 && $penyewaan->confirmed_status == 'confirmed') {
+        if ($tanggalMulai->diffInDays(Carbon::now()->startOfDay()) <= 3 && $penyewaan->confirmed_status == 'confirmed') {
             return redirect()->back()->withErrors([
                 'error' => 'Penyewaan tidak dapat dibatalkan karena H-3 dari tanggal mulai. Silahkan hubungi admin jika ingin membatalkan penyewaan.',
             ]);

@@ -25,7 +25,7 @@ class Penyewaan extends Model
 
     public function gedung()
     {
-        return $this->belongsTo(Gedung::class, 'gedung_id');
+        return $this->belongsTo(Gedung::class, 'gedung_id')->withTrashed();
     }
 
     public function riwayat()

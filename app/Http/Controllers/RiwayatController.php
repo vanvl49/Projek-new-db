@@ -23,10 +23,21 @@ class RiwayatController extends Controller
             $this->storeFromPenyewaan($item);
         }
 
+        // $riwayat = Riwayat::whereHas('penyewaan', function ($query) {
+        //     $query->where('id_user', Auth::id())
+        //         ->where('confirmed_status', 'confirmed')
+        //         ->whereHas('gedung', function ($query) {
+        //             $query->withTrashed();
+        //         });
+        // })->get();
+
         $riwayat = Riwayat::whereHas('penyewaan', function ($query) {
             $query->where('id_user', Auth::id())
-                ->where('confirmed_status', 'confirmed');
+                ->whereHas('gedung', function ($query) {
+                    $query->withTrashed(); // Pastikan withTrashed dipanggil di sini
+                });
         })->get();
+
 
         return view('customer.riwayat', compact('riwayat'));
     }

@@ -22,25 +22,31 @@
             <div class="overview grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <!-- Total Gedung Tersedia -->
                 <div class="card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-                    <h4 class="font-semibold text-gray-700 text-lg">Total Gedung Tersedia</h4>
+                    <a href="{{route('gedung.index')}}" class="font-semibold text-gray-700 text-lg hover:text-[#c01315]">
+                        <h4>Total Gedung Tersedia</h4>
+                    </a>
                     <p class="text-3xl font-bold text-red-600">{{ $totalGedung }}</p>
                 </div>
-            
+
                 <!-- Total Penyewa Aktif -->
                 <div class="card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-                    <h4 class="font-semibold text-gray-700 text-lg">Total Penyewaan</h4>
+                    <a href="{{route('riwayat.admin')}}" class="font-semibold text-gray-700 text-lg hover:text-[#c01315]">
+                        <h4>Total Penyewaan</h4>
+                    </a>
                     <p class="text-3xl font-bold text-red-600">{{ $totalPenyewaAktif }}</p>
                 </div>
-            
+
                 <!-- Penyewaan Terbaru -->
                 <div class="card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-                    <h4 class="font-semibold text-gray-700 text-lg">Penyewaan Terbaru</h4>
+                    <a href="{{route('penyewaan.pending')}}" class="font-semibold text-gray-700 text-lg hover:text-[#c01315]">
+                        <h4>Penyewaan Terbaru</h4>
+                    </a>
                     @if($penyewaanTerbaru && $penyewaanTerbaru->gedung && $penyewaanTerbaru->user)
-                        <p class="text-gray-600">{{ $penyewaanTerbaru->gedung->nama_gedung }} - {{ $penyewaanTerbaru->user->nama }}</p>
+                    <p class="text-gray-600">{{ $penyewaanTerbaru->gedung->nama_gedung }} - {{ $penyewaanTerbaru->user->nama }}</p>
                     @else
-                        <p class="text-gray-600">Tidak ada penyewaan yang dikonfirmasi.</p>
+                    <p class="text-gray-600">Tidak ada penyewaan yang belum dikonfirmasi.</p>
                     @endif
-                </div>                                 
+                </div>
             </div>
 
             <!-- Charts -->
@@ -54,10 +60,9 @@
     </div>
     @endsection
 </x-app-layout>
-
 <script>
     // JavaScript untuk menampilkan tanggal dinamis
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const months = [
             "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -73,9 +78,10 @@
         const formattedDate = `${day}, ${date} ${month} ${year}`;
         document.getElementById("currentDate").innerText = formattedDate;
     });
-    
+
     // const confirmedData = @json($confirmedData);
-    // const rejectedData = @json($rejectedData);
+    var confirmedData = JSON.parse('@json($confirmedData)');
+    var rejectedData = JSON.parse('@json($rejectedData)');
     const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     const ctx = document.getElementById('barChart').getContext('2d');
@@ -83,8 +89,7 @@
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [
-                {
+            datasets: [{
                     label: 'Confirmed',
                     data: confirmedData,
                     backgroundColor: 'rgba(54, 162, 235, 0.7)', // Biru
@@ -99,12 +104,22 @@
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'top' },
-                tooltip: { mode: 'index', intersect: false },
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                },
             },
             scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true },
+                x: {
+                    stacked: true
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true
+                },
             }
         }
     });

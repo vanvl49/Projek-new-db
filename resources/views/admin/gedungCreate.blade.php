@@ -4,15 +4,24 @@
             {{ __('Tambah Gedung') }}
         </h2>
     </x-slot>
-@section('content')
+    @section('content')
+    @if ($errors->any())
+    <div class="bg-red-100 text-red-700 p-4 mb-4">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @if(session('success'))
-                        <div class="bg-green-100 text-green-800 p-4 rounded mb-4">
-                            {{ session('success') }}
-                        </div>
+                    <div class="bg-green-100 text-green-800 p-4 rounded mb-4">
+                        {{ session('success') }}
+                    </div>
                     @endif
 
                     <form action="{{ route('gedungs.store') }}" method="POST" enctype="multipart/form-data">
@@ -48,7 +57,9 @@
                         <label for="gambar_gedung" class="block mb-2">Gambar Gedung:</label>
                         <input type="file" id="gambar_gedung" name="gambar_gedung" class="w-full p-2 border rounded mb-4" required>
 
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Gedung</button>
+                        <div class="flex justify-center mt-6">
+                            <button type="submit" class="bg-[#c01315] text-white px-4 py-2 rounded w-60">Tambah Gedung</button>
+                        </div>
                     </form>
                 </div>
             </div>

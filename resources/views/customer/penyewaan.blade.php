@@ -32,50 +32,50 @@
                                 <th class="px-4 py-2 border">Nama Gedung</th>
                                 <th class="px-4 py-2 border">Detail Acara</th>
                                 <th class="px-4 py-2 border">Tanggal Sewa</th>
-                                <th class="px-4 py-2 border">Total Harga</th> <!-- Kolom Baru -->
+                                <th class="px-4 py-2 border">Total Harga</th>
                                 <th class="px-4 py-2 border">Status Konfirmasi</th>
                                 <th class="px-4 py-2 border">Aksi</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @forelse ($penyewaan_confirmed as $index => $item)
+                            @forelse ($penyewaan_confirmed as $index => $items)
                             @php
                             // Hitung durasi penyewaan dalam hari
-                            $tanggalMulai = new DateTime($item->tanggal_mulai);
-                            $tanggalSelesai = new DateTime($item->tanggal_selesai);
+                            $tanggalMulai = new DateTime($items->tanggal_mulai);
+                            $tanggalSelesai = new DateTime($items->tanggal_selesai);
                             $durasi = $tanggalSelesai->diff($tanggalMulai)->days + 1;
 
                             $userType = auth()->user()->user_type; // Make sure the field is correctly named in your database
                             $isInternal = ($userType === 'internal');
 
-                            $hargaPerHari = $isInternal ? $item->gedung->harga_internal : $item->gedung->harga_eksternal;
+                            $hargaPerHari = $isInternal ? $items->gedung->harga_internal : $items->gedung->harga_eksternal;
 
                             // Calculate total price
                             $totalHarga = $durasi * $hargaPerHari;
                             @endphp
                             <tr>
                                 <td class="px-4 py-2 border text-center">{{ $index + 1 }}</td>
-                                <td class="px-4 py-2 border">{{ $item->gedung->nama_gedung }}</td>
-                                <td class="px-4 py-2 border">{{ $item->detail_acara }}</td>
+                                <td class="px-4 py-2 border">{{ $items->gedung->nama_gedung }}</td>
+                                <td class="px-4 py-2 border">{{ $items->detail_acara }}</td>
                                 <td class="px-4 py-2 border">
-                                    Dari : {{ $item->tanggal_mulai }} -- {{ $item->tanggal_selesai }}
+                                    Dari : {{ $items->tanggal_mulai }} -- {{ $items->tanggal_selesai }}
                                 </td>
                                 <td class="px-4 py-2 border text-right">
                                     Rp {{ number_format($totalHarga, 0, ',', '.') }}
                                 </td>
                                 <td class="px-4 py-2 border text-center">
-                                    @if ($item->confirmed_status === 'confirmed')
+                                    @if ($items->confirmed_status === 'confirmed')
                                     <span class="text-green-600 font-semibold">Terverifikasi</span>
-                                    @elseif ($item->confirmed_status === 'rejected')
+                                    @elseif ($items->confirmed_status === 'rejected')
                                     <span class="text-red-600 font-semibold">Dibatalkan</span>
-                                    @elseif ($item->confirmed_status === 'pending')
+                                    @elseif ($items->confirmed_status === 'pending')
                                     <span class="text-gray-500 font-semibold">Menunggu Konfirmasi</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-2 border text-center">
                                     <button
-                                        onclick="openDeletePenyewaan('{{ $item->id }}')"
+                                        onclick="openDeletePenyewaan('{{ $items->id }}')"
                                         class="bg-red-500 text-white px-4 py-2 rounded-md">
                                         Batalkan
                                     </button>
@@ -141,7 +141,7 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-2 border text-center">
-                                    <button onclick="openEditPenyewaan('{{ $item->id }}', '{{ $item->detail_acara }}', '{{ $item->tanggal_mulai }}', '{{ $item->tanggal_selesai }}', '{{ $item->gedung_id }}')" class="bg-green-500 text-white px-4 py-2 rounded-md">
+                                    <button onclick="openEditPenyewaan('{{ $item->id }}', '{{ $item->detail_acara }}', '{{ $item->tanggal_mulai }}', '{{ $item->tanggal_selesai }}', '{{ $item->gedung_id }}')" class="bg-green-500 text-white px-4 py-2 rounded-md mb-2">
                                         Ubah
                                     </button>
 
@@ -170,8 +170,8 @@
     <div id="editPenyewaan" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full h-fit text-center relative">
             <!-- Close Button -->
-            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800" onclick="closeEditPenyewaan()">
-                close
+            <button id="closeModalBtn" class="text-lg absolute top-4 right-4 text-black hover:text-[#c01315]" onclick="closeEditPenyewaan()">
+                x
             </button>
 
             <h1 class="text-2xl font-semibold mb-4">Ubah Penyewaan</h1>
@@ -190,9 +190,9 @@
                 <label for="tanggal_selesai" class="block mb-2">Tanggal Selesai:</label>
                 <input type="date" id="tanggal_selesai" name="tanggal_selesai" class="w-full p-2 border rounded mb-4" required>
 
-                <p id="totalPrice" class="text-lg text-gray-700 mt-4">Harga Total: Rp 0</p>
+                <p id="totalPrice" class="text-lg text-[#c01315] mt-4">Harga Total: Rp 0</p>
 
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Ubah Penyewaan</button>
+                <button type="submit" class="mt-2 bg-[#c01315] text-white px-4 py-2 rounded">Ubah Penyewaan</button>
             </form>
         </div>
     </div>

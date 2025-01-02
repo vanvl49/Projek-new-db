@@ -2,13 +2,13 @@
 
 @section('title', 'Login')
 
-@section('bg-image-class', 'bg-[url("https://unej.ac.id/wp-content/uploads/2023/07/bgheaderunej.webp")] bg-cover bg-center backdrop-blur-lg')
-
 @section('content')
-<section class="">
+<section class="relative">
+    <div class="absolute inset-0 bg-[url('https://unej.ac.id/wp-content/uploads/2023/07/bgheaderunej.webp')] bg-cover bg-center brightness-75">
+    </div>
     <x-auth-session-status class="" :status="session('status')" />
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a href="{{ route('home') }}" class="text-4xl font-poppins  font-extrabold text-black mb-2"> SEWA GEDUNG UNEJ </a>
+        <a href="{{ route('home') }}" class="text-4xl font-poppins  font-extrabold text-black mb-2"> GEDUNGIN UNEJ </a>
         <div class="w-full bg-white rounded-lg shadow bg-opacity-50 shadow-lg backdrop-blur-md  md:mt-0 sm:max-w-md xl:p-0">
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl text-center">

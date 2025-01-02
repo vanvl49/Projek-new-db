@@ -34,10 +34,14 @@ class AdminController extends Controller
         return back()->withErrors(['login' => 'Invalid username or password']);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
-        return redirect()->route('admin.login')->with('success', 'Logged out successfully');
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect(route('home'));
     }
 
     // Dashboard admin
@@ -49,9 +53,8 @@ class AdminController extends Controller
         // Menghitung jumlah penyewa aktif (penyewaan yang sudah dikonfirmasi)
         $totalPenyewaAktif = Penyewaan::where('confirmed_status', 'confirmed')->count();
 
-        // Menampilkan penyewaan terbaru yang sudah dikonfirmasi
         $penyewaanTerbaru = Penyewaan::with(['gedung', 'user'])
-            ->where('confirmed_status', 'confirmed')
+            ->where('confirmed_status', 'pending')
             ->latest() // Mengambil penyewaan terbaru berdasarkan tanggal
             ->first();
 

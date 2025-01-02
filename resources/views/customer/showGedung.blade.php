@@ -24,21 +24,47 @@
                 <!-- Detail Gedung -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                     <!-- Gambar Gedung -->
-                    <div>
-                        <img src="#" alt="Gambar Gedung" class="w-full h-80 object-cover rounded-lg mb-4">
+                    <div class="">
+                        <img src="{{ asset('storage/' . $gedung->gambar_gedung) }}" alt="Gambar Gedung" class="w-full h-80 object-cover rounded-lg mb-4">
                     </div>
 
                     <!-- Informasi Detail Gedung -->
-                    <div>
-                        <h3 class="text-2xl font-semibold">{{ $gedung->nama_gedung }}</h3>
-                        <p class="text-gray-600 mt-4">{{ $gedung->deskripsi }}</p>
-                        <p class="text-sm text-gray-500 mt-4">Kapasitas: {{ $gedung->kapasitas }} orang</p>
-                        <p class="text-sm text-gray-500">Fasilitas: {{ $gedung->fasilitas }}</p>
-                        <p class="text-sm text-gray-500">Alamat: {{ $gedung->alamat }}</p>
-                        <p class="text-sm text-gray-500">Harga Sewa Perhari: Rp {{ number_format($gedung->harga_tampil, 0, ',', '.') }}</p>
+                    <div class="ml-8">
+                        <h3 class="text-4xl font-extrabold">{{ $gedung->nama_gedung }}</h3>
+                        <p class="text-lg text-black font-semibold mt-2">{{ $gedung->deskripsi }}</p>
 
-                        <div class="mt-4 text-center">
-                            <button onclick="openCreatePenyewaan()" class="inline-flex text-white bg-[#c01315] border-0 py-2 px-10 focus:outline-none rounded text-lg">
+                        <!-- Alamat -->
+                        <div class="flex items-center mt-4">
+                            <img src="https://cdn.iconscout.com/icon/free/png-256/free-location-icon-download-in-svg-png-gif-file-formats--marker-pointer-map-pin-navigation-finance-and-economy-pack-business-icons-2561454.png?f=webp&w=256" alt="Ikon Alamat" class="w-6 h-6 mr-2">
+                            <p class="text-md text-black font-semibold"><span class="font-medium">{{ $gedung->alamat }}</span></p>
+                        </div>
+
+                        <!-- Kapasitas -->
+                        <div class="flex items-center mt-4">
+                            <img src="https://static.vecteezy.com/system/resources/previews/008/506/404/non_2x/contact-person-red-icon-free-png.png" alt="Ikon Kapasitas" class="w-6 h-6 mr-2">
+                            <p class="text-md text-black font-semibold">Kapasitas: <span class="font-medium">{{ $gedung->kapasitas }} orang</span></p>
+                        </div>
+
+                        <!-- Fasilitas -->
+                        <div class="flex items-center mt-4">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZlEusYFLcrIX0YctCHkiO-X_yF2Evf0IK7A&s" alt="Ikon Fasilitas" class="w-6 h-6 mr-2">
+                            <p class="text-md text-black font-semibold">Fasilitas: <span class="font-medium">{{ $gedung->fasilitas }}</span></p>
+                        </div>
+
+                        <div class="flex items-center mt-4">
+                            <img src="https://cdn1.iconfinder.com/data/icons/color-bold-style/21/06_1-512.png" alt="Ikon Fasilitas" class="w-6 h-6 mr-2">
+                            <button class="text-md text-black font-semibold" onclick='openCalendarModal("{{ $gedung->id }}")'>Jadwal Penyewaan</button>
+
+                        </div>
+
+                        <!-- Harga -->
+                        <div class="flex items-center mt-4">
+                            <p class="text-2xl text-[#c01315] font-semibold">Tarif: <span class="font-medium">Rp {{ number_format($gedung->harga_tampil, 0, ',', '.')}}/Hari</span></p>
+                        </div>
+
+                        <!-- Tombol Sewa Gedung -->
+                        <div class="mt-6 text-center">
+                            <button onclick="openCreatePenyewaan()" class="inline-flex text-white bg-[#c01315] border-0 py-2 px-10 focus:outline-none rounded-xl text-lg">
                                 Sewa Gedung
                             </button>
                         </div>
@@ -49,11 +75,23 @@
     </div>
 </div>
 
+<!-- Calendar Modal -->
+<div id="calendarModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full h-[600px] text-center relative">
+        <button id="closeCalendarBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800" onclick="closeCalendarModal()">X</button>
+        <h1 class="text-2xl font-semibold mb-4">Jadwal Penyewaan {{ $gedung->nama_gedung }}</h1>
+        <div id="calendar" class="w-full h-full"></div>
+    </div>
+</div>
+
+
+
+
 <div id="createPenyewaan" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full h-fit text-center relative">
         <!-- Close Button -->
-        <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800" onclick="closeCreatePenyewaan()">
-            close
+        <button id="closeModalBtn" class="absolute top-4 right-4 text-lg text-black hover:text-[#c01315]" onclick="closeCreatePenyewaan()">
+            x
         </button>
 
         <h1 class="text-2xl font-semibold mb-4">Tambah Penyewaan</h1>
@@ -65,23 +103,20 @@
             <label for="detail_acara" class="block mb-2">Detail Acara:</label>
             <textarea id="detail_acara" name="detail_acara" class="w-full p-2 border rounded mb-4" required></textarea>
 
-            <!-- Input Tanggal Mulai -->
-            <input type="text" id="tanggal_mulai" placeholder="Pilih Tanggal Mulai">
-            <input type="text" id="tanggal_selesai" placeholder="Pilih Tanggal Selesai">
+            <label for="tanggal_mulai" class="block mb-2">Tanggal Mulai</label>
+            <input type="date" id="tanggal_mulai" name="tanggal_mulai" class="w-full p-2 border rounded mb-4" required>
+            <label for="tanggal_selesai" class="block mb-2">Tanggal Selesai</label>
+            <input type="date" id="tanggal_selesai" name="tanggal_selesai" class="w-full p-2 border rounded mb-4" required>
 
-
-            <p class="mt-2 text-sm text-gray-600">Tanggal yang tidak tersedia akan dinonaktifkan.</p>
             <div id="message" class="mt-4 text-red-500 hidden"></div>
 
-            <p id="hargaSewa" class="text-sm text-gray-500">Harga Sewa Perhari: Rp {{ number_format($gedung->harga_tampil, 0, ',', '.') }}</p>
+            <p id="hargaSewa" class="text-md text-[#c01315]">Harga Sewa Perhari: Rp {{ number_format($gedung->harga_tampil, 0, ',', '.') }}</p>
 
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Penyewaan</button>
+            <button type="submit" class="mt-4 bg-[#c01315] text-white px-4 py-2 rounded">Tambah Penyewaan</button>
         </form>
     </div>
 </div>
-@endsection
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
     function openCreatePenyewaan() {
         document.getElementById('createPenyewaan').classList.remove('hidden');
@@ -91,51 +126,97 @@
         document.getElementById('createPenyewaan').classList.add('hidden');
     }
 
-    const hargaPerHari = parseInt("{{ $gedung->harga_tampil }}", 10); // Ambil harga per hari dari backend
+    function openCalendarModal(gedungId) {
+        document.getElementById('calendarModal').classList.remove('hidden');
+        loadCalendarData();
+        calendar.render();
+        calendar.updateSize();
 
-    function hitungHargaSewa() {
-        const tanggalMulai = document.getElementById('tanggal_mulai').value;
-        const tanggalSelesai = document.getElementById('tanggal_selesai').value;
-
-        if (tanggalMulai && tanggalSelesai) {
-            const mulai = new Date(tanggalMulai);
-            const selesai = new Date(tanggalSelesai);
-
-            // Hitung durasi dalam hari
-            const durasi = (selesai - mulai) / (1000 * 60 * 60 * 24) + 1;
-
-            if (durasi > 0) {
-                const totalHarga = durasi * hargaPerHari;
-                document.getElementById('hargaSewa').textContent =
-                    `Harga Sewa: Rp. ${totalHarga.toLocaleString('id-ID')}`;
-            } else {
-                document.getElementById('hargaSewa').textContent =
-                    'Tanggal selesai harus setelah tanggal mulai.';
-            }
-        }
+        // // Initialize FullCalendar
+        // $('#calendar').fullCalendar({
+        //     events: function(start, end, timezone, callback) {
+        //         $.ajax({
+        //             url: `/penyewaan/${gedungId}/schedule`,
+        //             dataType: 'json',
+        //             success: function(data) {
+        //                 callback(data);
+        //             }
+        //         });
+        //     },
+        //     header: {
+        //         left: 'prev,next today',
+        //         center: 'title',
+        //         right: 'month,agendaWeek,agendaDay'
+        //     }
+        // });
     }
 
-    // Event listener untuk update harga otomatis
-    document.getElementById('tanggal_mulai').addEventListener('change', hitungHargaSewa);
-    document.getElementById('tanggal_selesai').addEventListener('change', hitungHargaSewa);
+    function closeCalendarModal() {
+        document.getElementById('calendarModal').classList.add('hidden');
+        $('#calendar').fullCalendar('destroy');
+    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const gedungId = "{{$gedung->id}}"; // ID Gedung
+    function loadCalendarData() {
+        const gedungId = "{{ $gedung->id }}";
         fetch(`/gedung/${gedungId}/jadwal-sewa`)
             .then(response => response.json())
-            .then(unavailableDates => {
-                flatpickr("#tanggal_mulai", {
-                    dateFormat: "Y-m-d",
-                    disable: unavailableDates,
-                    minDate: "today",
-                });
-
-                flatpickr("#tanggal_selesai", {
-                    dateFormat: "Y-m-d",
-                    disable: unavailableDates,
-                    minDate: "today",
-                });
+            .then(data => {
+                console.log(data);
+                calendar.removeAllEvents();
+                calendar.addEventSource(data);
             })
-            .catch(error => console.error('Error fetching unavailable dates:', error));
+            .catch(error => console.error('Error loading calendar data:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarModal = document.getElementById('calendarModal');
+        const closeCalendarBtn = document.getElementById('closeCalendarBtn');
+        const openCalendarBtn = document.querySelector('.text-black.font-semibold');
+
+        const gedungId = "{{ $gedung->id }}";
+
+        const calendarEl = document.getElementById('calendar');
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek'
+            },
+            eventDisplay: 'block',
+            events: function(fetchInfo, successCallback, failureCallback) {
+                fetch(`/gedung/${gedungId}/jadwal-sewa`)
+                    .then(response => response.json())
+                    .then(data => successCallback(data))
+                    .catch(error => failureCallback(error));
+            }
+        });
+
+        calendar.render();
+
+        let hargaPerHari = parseInt("{{ $gedung->harga_tampil}}", 10);
+
+        function updateTotalPrice() {
+            let tanggalMulai = new Date(document.getElementById('tanggal_mulai').value);
+            let tanggalSelesai = new Date(document.getElementById('tanggal_selesai').value);
+
+            if (tanggalMulai && tanggalSelesai && tanggalSelesai >= tanggalMulai) {
+                let diffTime = tanggalSelesai - tanggalMulai;
+                let diffDays = diffTime / (1000 * 3600 * 24) + 1;
+
+                let totalHarga = diffDays * hargaPerHari;
+
+                document.getElementById('hargaSewa').innerText = `Harga Total: Rp ${totalHarga.toLocaleString()}`;
+            } else {
+                document.getElementById('hargaSewa').innerText = "Harga Total: Rp 0";
+            }
+        }
+
+        document.getElementById('tanggal_mulai').addEventListener('change', updateTotalPrice);
+        document.getElementById('tanggal_selesai').addEventListener('change', updateTotalPrice);
+
+        updateTotalPrice();
     });
 </script>
+@endsection

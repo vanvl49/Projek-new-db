@@ -5,17 +5,54 @@ namespace App\Http\Controllers;
 use App\Models\Gedung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+
 
 class GedungAdminController extends Controller
 {
     // Menampilkan semua gedung
-    public function index()
-    {
-        $gedungs = Gedung::all();
-        $user_type = Auth::check() && Auth::user()->type ? Auth::user()->type : 'internal';
 
-        return view('admin.gedungIndex', compact('gedungs', 'user_type'));
+    public function index(Request $request)
+    {
+        // Simpan filter pencarian ke cookies (valid 30 menit)
+        if ($request->has('nama_gedung') || $request->has('kapasitas')) {
+            Cookie::queue('filter_nama_gedung', $request->get('nama_gedung', ''), 30);
+            Cookie::queue('filter_kapasitas', $request->get('kapasitas', ''), 30);
+        }
+
+        // Ambil data pencarian dari cookies
+        $namaGedung = $request->get('nama_gedung', Cookie::get('filter_nama_gedung', ''));
+        $kapasitas = $request->get('kapasitas', Cookie::get('filter_kapasitas', ''));
+
+        // Query awal untuk gedung
+        $query = Gedung::query();
+
+        // Filter berdasarkan kapasitas
+        if (!empty($kapasitas)) {
+            $query->where('kapasitas', '>=', $kapasitas);
+        }
+
+        // Filter berdasarkan nama gedung
+        if (!empty($namaGedung)) {
+            $query->where('nama_gedung', 'like', '%' . $namaGedung . '%');
+        }
+
+        // Filter berdasarkan ketersediaan
+        $query->where('is_available', '=', true);
+
+        // Dapatkan hasil
+        $gedungs = $query->get();
+
+        // Logika harga berdasarkan tipe pengguna
+        foreach ($gedungs as $gedung) {
+            $gedung->harga_tampil = Cookie::get('user_type') === 'internal'
+                ? $gedung->harga_internal
+                : $gedung->harga_eksternal;
+        }
+
+        return view('admin.gedungIndex', compact('gedungs', 'namaGedung', 'kapasitas'));
     }
+
 
     // Menampilkan detail gedung berdasarkan ID
     public function show($id)
@@ -39,8 +76,8 @@ class GedungAdminController extends Controller
             'kapasitas' => 'required|integer',
             'fasilitas' => 'required|string',
             'alamat' => 'required|string',
-            'harga_internal' => 'required|numeric',
-            'harga_eksternal' => 'required|numeric',
+            'harga_internal' => 'required|numeric|min:0',
+            'harga_eksternal' => 'required|numeric|min:0',
             'gambar_gedung' => 'required|image|mimes:jpg,png,jpeg,gif|max:2048',
         ]);
 
@@ -87,8 +124,8 @@ class GedungAdminController extends Controller
             'kapasitas' => 'required|integer',
             'fasilitas' => 'required|string',
             'alamat' => 'required|string',
-            'harga_internal' => 'required|numeric',
-            'harga_eksternal' => 'required|numeric',
+            'harga_internal' => 'required|numeric|min:0',
+            'harga_eksternal' => 'required|numeric|min:0',
             'is_available' => 'required|boolean',
             'gambar_gedung' => 'nullable|image|max:2048',
         ]);

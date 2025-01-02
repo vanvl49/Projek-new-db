@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GedungController;
 use App\Http\Controllers\GedungAdminController;
@@ -14,9 +15,7 @@ Route::get('/', function () {
     return view('landingPage');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('customer.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AuthenticatedSessionController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.submit');
 Route::middleware(['auth:admin'])->group(function () {
@@ -36,6 +35,7 @@ Route::get('/gedung/{id}', [GedungAdminController::class, 'show'])->name('gedung
 
 Route::get('/gedung/{id}/edit', [GedungAdminController::class, 'edit'])->name('gedungs.edit');
 Route::put('/gedung/{id}', [GedungAdminController::class, 'update'])->name('gedungs.update');
+Route::post('/gedung/delete', [GedungAdminController::class, 'destroy'])->name('gedung.delete');
 
 // Route::get('/gedung/created', [GedungController::class, '#'])->name('gedungs.buat');
 Route::get('/gedungs/created', [GedungAdminController::class, 'create'])->name('gedungs.create');
@@ -53,5 +53,7 @@ Route::get('/riwayat-penyewaan', [RiwayatAdminController::class, 'index'])->name
 Route::get('/riwayatPenyewaan', [RiwayatController::class, 'index'])->name('riwayat.customer');
 
 Route::post('/gedung', [GedungAdminController::class, 'store'])->name('gedungs.store');
+Route::post('logout-admin', [AdminController::class, 'logout'])
+    ->name('logout.admin');
 
 require __DIR__ . '/auth.php';

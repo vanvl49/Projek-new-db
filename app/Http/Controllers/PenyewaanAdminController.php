@@ -30,9 +30,7 @@ class PenyewaanAdminController extends Controller
         $penyewaan->confirmed_status = $request->status;
         $penyewaan->save();
 
-        if ($penyewaan->confirmed_status === 'rejected') {
-            $riwayatController->storeFromPenyewaan($penyewaan);
-        }
+        $riwayatController->storeFromPenyewaan($penyewaan);
     
         $message = $request->status === 'confirmed' ? 'Penyewaan berhasil dikonfirmasi.' : 'Penyewaan berhasil dibatalkan.';
         return back()->with('success', $message);
